@@ -1,0 +1,133 @@
+﻿@model Modelo.PuntoVenta
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas test</title>
+</head>
+<body>
+    <style>
+        #map {
+            height: 350px;
+            width: 50%;
+        }
+    </style>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="chartContainer" @*style="height: 400px; width: 50%;*@"></div>
+        </div>
+        <div class="col-md-6">
+            <h1 class="text-center" style="text-shadow: 0 0 4px #4800ff;"> Puntos de venta</h1>
+            <div id="map" style="@*position: absolute;*@ width: 500px; height: 350px; border: 3px solid green; left: 100px;"></div>
+        </div>
+    </div>
+
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&callback=initMap&libraries=&v=weekly&sensor=false" defer></script>
+    <script type="text/javascript">
+
+        window.onload = function () {
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                title: {
+                    text: "Total de Ventas por zona"
+                },
+                subtitles: [{
+                    text: "Periodo 2022"
+                }],
+                animationEnabled: true,
+                data: [
+                    {
+                        type: "pie",
+                        startAngle: 40,
+                        toolTipContent: "<b>{label}</b>: {y}%",
+                        showInLegend: "true",
+                        legendText: "{label}",
+                        indexLabelFontSize: 16,
+                        indexLabel: "{label} - {y}%",
+                        dataPoints: [
+                            @foreach(Modelo.PuntoVenta estadistica in Model.Estadistica.TotalVentas)
+                            {
+                                 <text>{ y: @estadistica.Venta, label: "@estadistica.Zona.NomZona" },</text>
+
+                            }
+
+                        ]
+                    }
+                ]
+            });
+
+            chart.render();
+
+        }
+        function initMap() {
+
+            if ($("#txtLatitud").val() == 0 && $("#txtLongitud").val() == 0) {
+
+                myLatlng = { lat: 19.59761, lng: -99.18054 };
+            } else {
+
+                myLatlng = { lat: 19.59761, lng: -99.18054 };
+            }
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 11,
+                center: myLatlng,
+            });
+              @foreach(Modelo.PuntoVenta puntoventa in Model.PuntoVentas)
+                            {
+                                 <text>var marker = new google.maps.Marker({ position: { lat:@puntoventa.Latitud, lng: @puntoventa.Longitud }, map: map });</text>
+
+                            }
+            /*var marker = new google.maps.Marker({ position: myLatlng, map: map });*/
+
+            /*infoWindow.open(map);*/
+            // Configure the click listener.
+
+
+
+            //map.addListener("click", (mapsMouseEvent) => {
+            //    // Close the current InfoWindow.
+            //    infoWindow.close();
+            //    // Create a new InfoWindow.
+            //    infoWindow = new google.maps.InfoWindow({
+            //        position: mapsMouseEvent.latLng,
+            //    });
+            //    infoWindow.setContent(
+            //        JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+            //    );
+
+            //    infoWindow.open(map);
+            //    var Latitud = mapsMouseEvent.latLng.lat();
+            //    var Longitud = mapsMouseEvent.latLng.lng();
+            //    $("#txtLatitud").val(Latitud);
+            //    $("#txtLongitud").val(Longitud);
+            //});
+        }
+
+
+        window.initMap = initMap;
+
+
+
+        //var jsonFile = [{ "Nombre": "Punto1", "Lat": 19.59761, "Lng": -99.18054, "FechaHora": "2020-11-03 10:09:58" },
+        //{ "Nombre": "Punto2", "Lat": 19.59764, "Lng": -99.18063, "FechaHora": "2020-11-03 10:11:16" },
+        //{ "Nombre": "Punto3", "Lat": 19.59784, "Lng": -99.1804, "FechaHora": "2020-11-03 10:58:24" },
+        //{ "Nombre": "Punto4", "Lat": 19.51953, "Lng": -99.20602, "FechaHora": "2020-11-03 15:01:50" },
+        //{ "Nombre": "Punto5", "Lat": 19.51987, "Lng": -99.20607, "FechaHora": "2020-11-05 08:51:40" }]
+
+        //for (i = 0; i < jsonFile.length; i++) {
+
+        //    var obj = jsonFile[i]
+        //    var marker = new google.maps.Marker({
+        //        position: { lat: obj.Lat, lng: obj.Lng },
+        //        map: map,
+        //        title: obj.Nombre
+        //    });
+
+        //}
+
+    </script>
+
+</body>
+</html>
