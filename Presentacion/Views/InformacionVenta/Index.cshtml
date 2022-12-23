@@ -74,35 +74,52 @@
                 zoom: 11,
                 center: myLatlng,
             });
-              @foreach(Modelo.PuntoVenta puntoventa in Model.PuntoVentas)
-                            {
-                                 <text>var marker = new google.maps.Marker({ position: { lat:@puntoventa.Latitud, lng: @puntoventa.Longitud }, map: map });</text>
+              @foreach (Modelo.PuntoVenta puntoventa in Model.PuntoVentas)
+              {
+                                 <text>
+            var contentString = '<div id="content">' +
+                '<div id="siteNotice">' +
+                '</div>' +
+                'Descripción: ' + '@puntoventa.Descripcion' +
+                '<div id="bodyContent">' +
+                'Ventas:' +'@puntoventa.Venta'+ "<br>" +
+                '</div>' +
+                '</div>';
 
-                            }
-            /*var marker = new google.maps.Marker({ position: myLatlng, map: map });*/
-            let infoWindow = new google.maps.InfoWindow({
-                content: "Presiona la locación",
-                position: myLatlng,
+            var marker_@puntoventa.ID = new google.maps.Marker({ position: { lat:@puntoventa.Latitud, lng: @puntoventa.Longitud }, map: map });
+
+            (marker_@puntoventa.ID).addListener("click", function () {
+                (infoWindow_@puntoventa.ID).open(map, marker_@puntoventa.ID);
             });
+            var infoWindow_@puntoventa.ID = new google.maps.InfoWindow({
+                content: contentString,
+                ariaLabel: "Punto de Venta",
+            });
+            </text>
+              }
 
-            infoWindow.open(map);
+
+
+            @*(infoWindow_@Model.ID).open(map);*@
             // Configure the click listener.
 
+            @*'marker'+'@Model.ID'.addListener("click", function () {
+                infoWindow.open(map, marker);
+            });*@
 
+            //map.addListener("click", (mapsMouseEvent) => {
+            //    // Close the current InfoWindow.
+            //    infoWindow.close();
+            //    // Create a new InfoWindow.
+            //    infoWindow = new google.maps.InfoWindow({
+            //        position: mapsMouseEvent.latLng,
+            //    });
+            //    infoWindow.setContent(
+            //        JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+            //    );
 
-            map.addListener("click", (mapsMouseEvent) => {
-                // Close the current InfoWindow.
-                infoWindow.close();
-                // Create a new InfoWindow.
-                infoWindow = new google.maps.InfoWindow({
-                    position: mapsMouseEvent.latLng,
-                });
-                infoWindow.setContent(
-                    JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
-                );
-
-                infoWindow.open(map);
-            });
+            //    infoWindow.open(map);
+            //});
         }
 
 
