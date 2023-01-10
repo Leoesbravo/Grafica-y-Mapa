@@ -143,8 +143,22 @@
                 infoWindow.open(map);
                 // Configure the click listener.
 
+                //obtener direccion 
+                google.maps.event.addListener(map, 'click', function (event) {
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({
+                        'latLng': event.latLng
+                    }, function (results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            if (results[0]) {
+                                alert(results[0].formatted_address);
+                            }
+                        }
+                    });
+                });
 
 
+                //obtener cordenadas
                 map.addListener("click", (mapsMouseEvent) => {
                     // Close the current InfoWindow.
                     infoWindow.close();
